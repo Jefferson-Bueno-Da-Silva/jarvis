@@ -145,7 +145,7 @@ def google_tasks_delete(task_id: str) -> dict[str, Any]:
 
 GOOGLE_TASKS_TOOLS = [
     google_tasks_list,
-    # google_tasks_create,
-    # google_tasks_update,
-    # google_tasks_delete,
+    google_tasks_create,
+    google_tasks_update,
+    google_tasks_delete,
 ]
