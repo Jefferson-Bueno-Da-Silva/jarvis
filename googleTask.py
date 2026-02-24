@@ -49,10 +49,6 @@ class GoogleTask:
         print("No task lists found.")
         return
 
-      print("Tasks:")
-      for item in items:
-        print(f"{item['title']} ({item['id']})")
-
       return items
     except HttpError as error:
       print(f"An error occurred: {error}")
