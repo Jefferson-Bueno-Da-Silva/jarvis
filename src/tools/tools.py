@@ -5,8 +5,7 @@ from typing import Any
 from langchain.tools import tool
 from pydantic import BaseModel, Field
 
-from googleTask import GoogleTask
-
+from src.services.GoogleTasks.googleTask import GoogleTask
 
 _google_tasks_client: GoogleTask | None = None
 

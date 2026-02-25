@@ -1,9 +1,9 @@
 import os
 
-from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
+from dotenv import load_dotenv
 
-from tools import GOOGLE_TASKS_TOOLS
+from src.tools.tools import GOOGLE_TASKS_TOOLS
 
 load_dotenv()
 
