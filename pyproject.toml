@@ -9,7 +9,10 @@ dependencies = [
     "google-api-python-client>=2.190.0",
     "google-auth-httplib2>=0.3.0",
     "google-auth-oauthlib>=1.2.4",
+    "ipython>=9.10.0",
     "langchain>=1.2.10",
     "langchain-core>=0.3.0",
     "langchain-google-genai>=4.2.0",
+    "langgraph>=1.0.8",
+    "langsmith>=0.7.3",
 ]
