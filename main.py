@@ -1,5 +1,13 @@
-from src.agent.main import run_pipeline
+import sys
 
-final_state = run_pipeline()
-for message in final_state["messages"]:
-    message.pretty_print()
+from src.agent.main import extract_final_answer, run_pipeline
+
+
+def main() -> None:
+    user_input = " ".join(sys.argv[1:]).strip() or "Liste as minhas tarefas"
+    final_state = run_pipeline(user_input)
+    print(extract_final_answer(final_state))
+
+
+if __name__ == "__main__":
+    main()
