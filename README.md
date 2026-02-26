@@ -27,7 +27,7 @@ cd jarvis
 ### 2. Instalar dependências
 
 ```bash
-uv sync
+make sync
 ```
 
 ## Configuração de ambiente
@@ -55,28 +55,48 @@ Observações:
 Escopo usado:
 - `https://www.googleapis.com/auth/tasks`
 
-## Como executar
+## Como executar com Makefile
+
+Ver todos os comandos disponíveis:
 
 ```bash
-uv run python main.py
+make help
 ```
 
-O script principal chama `run_pipeline()` e imprime as mensagens finais do agente.
+Executar agente (mensagem padrão):
 
-Também é possível passar a mensagem direto por argumento:
+```bash
+make agent
+```
+
+Executar agente com mensagem customizada:
+
+```bash
+make agent MSG="Liste as minhas tarefas"
+```
+
+Subir API HTTP:
+
+```bash
+make api
+```
+
+## Como executar com uv (opcional)
 
 ```bash
 uv run python main.py "Liste as minhas tarefas"
 ```
 
-## API HTTP (pasta `APP`)
+O script principal chama `run_pipeline()` e imprime as mensagens finais do agente.
 
-A API foi criada em `APP/main.py` usando FastAPI para servir o agente via HTTP.
+## API HTTP (pasta `src/APP`)
+
+A API foi criada em `src/APP/main.py` usando FastAPI para servir o agente via HTTP.
 
 ### Subir servidor
 
 ```bash
-uv run uvicorn APP.main:app --reload
+make api
 ```
 
 ### Endpoints
@@ -100,6 +120,8 @@ Resposta:
 ```json
 {
   "answer": "Aqui estão as suas tarefas...",
+  "success": true,
+  "used_tools": ["google_tasks_list"],
   "llm_calls": 2
 }
 ```
@@ -112,7 +134,7 @@ Swagger UI:
 - `main.py`  
 Ponto de entrada CLI da aplicação. Executa o pipeline e exibe a saída final.
 
-- `APP/main.py`  
+- `src/APP/main.py`  
 Servidor HTTP com FastAPI para consumir o agente pelo protocolo HTTP.
 
 - `src/agent/main.py`  
