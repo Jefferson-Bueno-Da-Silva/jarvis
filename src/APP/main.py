@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-from src.agent.main import extract_final_answer, run_pipeline
+from src.agent.main import extract_structured_output, run_pipeline
 
 app = FastAPI(
     title="Jarvis Agent API",
@@ -16,6 +16,8 @@ class AgentRequest(BaseModel):
 
 class AgentResponse(BaseModel):
     answer: str
+    success: bool
+    used_tools: list[str]
     llm_calls: int
 
 
@@ -28,7 +30,12 @@ def health() -> dict[str, str]:
 def ask_agent(payload: AgentRequest) -> AgentResponse:
     try:
         final_state = run_pipeline(payload.message)
-        answer = extract_final_answer(final_state)
-        return AgentResponse(answer=answer, llm_calls=final_state.get("llm_calls", 0))
+        structured = extract_structured_output(final_state)
+        return AgentResponse(
+            answer=structured.answer,
+            success=structured.success,
+            used_tools=structured.used_tools,
+            llm_calls=final_state.get("llm_calls", 0),
+        )
     except Exception as error:
         raise HTTPException(status_code=500, detail=f"Erro ao processar requisição: {error}") from error
