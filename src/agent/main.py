@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from langchain.messages import AIMessage, HumanMessage
 from langfuse import propagate_attributes
 from langgraph.graph import END, START, StateGraph
@@ -9,10 +11,10 @@ from src.agent.state import AgentOutput, MessagesState
 
 
 agent_builder = StateGraph(MessagesState)
-agent_builder.add_node("bootstrap_tasks_node", bootstrap_tasks_node)  # type: ignore
-agent_builder.add_node("llm_call", llm_call)  # type: ignore
-agent_builder.add_node("tool_node", tool_node)  # type: ignore
-agent_builder.add_node("finalize_node", finalize_node)  # type: ignore
+agent_builder.add_node("bootstrap_tasks_node", bootstrap_tasks_node)
+agent_builder.add_node("llm_call", llm_call) 
+agent_builder.add_node("tool_node", tool_node)
+agent_builder.add_node("finalize_node", finalize_node)
 
 agent_builder.add_edge(START, "bootstrap_tasks_node")
 agent_builder.add_edge("bootstrap_tasks_node", "llm_call")
@@ -21,6 +23,15 @@ agent_builder.add_edge("tool_node", "llm_call")
 agent_builder.add_edge("finalize_node", END)
 
 agent = agent_builder.compile()
+
+
+def save_graph_image(output_path: str | Path = Path("src/static/graph_xray.png")) -> Path:
+    target_path = Path(output_path)
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+
+    graph_png = agent.get_graph().draw_mermaid_png()
+    target_path.write_bytes(graph_png)
+    return target_path
 
 
 def run_pipeline(user_input: str) -> dict:
