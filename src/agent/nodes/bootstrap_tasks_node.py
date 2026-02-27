@@ -11,18 +11,16 @@ from src.models.model import tools_by_name
 def bootstrap_tasks_node(state: MessagesState) -> MessagesState:
     """Preload google_tasks_list output into state before the first LLM call."""
     result = state.get("messages", [])
-    used_tools: list[str] = state.get("used_tools", [])
     list_tool = tools_by_name.get("google_tasks_list")
     if list_tool is None:
         return {
             "messages": result,
-            "used_tools": used_tools,
+            "used_tools": [],
             "llm_calls": state.get("llm_calls", 0),
         }
 
     try:
         list_result = list_tool.invoke({"limit": 20})
-        used_tools.append("google_tasks_list")
         result.append(
             SystemMessage(
                 content=(
@@ -41,6 +39,6 @@ def bootstrap_tasks_node(state: MessagesState) -> MessagesState:
 
     return {
         "messages": result,
-        "used_tools": used_tools,
+        "used_tools": ["google_tasks_list"],
         "llm_calls": state.get("llm_calls", 0),
     }
