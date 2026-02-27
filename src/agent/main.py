@@ -3,17 +3,19 @@ from langfuse import propagate_attributes
 from langgraph.graph import END, START, StateGraph
 
 from src.agent.config import langfuse
-from src.agent.nodes import finalize_node, llm_call, should_continue, tool_node
+from src.agent.nodes import bootstrap_tasks_node, finalize_node, llm_call, should_continue, tool_node
 from src.agent.session import generate_session_id
 from src.agent.state import AgentOutput, MessagesState
 
 
 agent_builder = StateGraph(MessagesState)
+agent_builder.add_node("bootstrap_tasks_node", bootstrap_tasks_node)  # type: ignore
 agent_builder.add_node("llm_call", llm_call)  # type: ignore
 agent_builder.add_node("tool_node", tool_node)  # type: ignore
 agent_builder.add_node("finalize_node", finalize_node)  # type: ignore
 
-agent_builder.add_edge(START, "llm_call")
+agent_builder.add_edge(START, "bootstrap_tasks_node")
+agent_builder.add_edge("bootstrap_tasks_node", "llm_call")
 agent_builder.add_conditional_edges("llm_call", should_continue, ["tool_node", "finalize_node"])
 agent_builder.add_edge("tool_node", "llm_call")
 agent_builder.add_edge("finalize_node", END)

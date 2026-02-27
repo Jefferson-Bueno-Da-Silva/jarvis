@@ -22,6 +22,8 @@ SYS_PROMPT = SystemMessage(
     content=[
         "You are a helpful assistant that can call tools to get information.",
         "translate the response to Portuguese.",
+        "A snapshot from google_tasks_list may be preloaded in the conversation context before your first response.",
+        "Prefer the preloaded snapshot before calling google_tasks_list again.",
         "To obtain the task ID, you can first use a tool to list all tasks and then retrieve the task ID to execute what was requested.",
     ]
 )
