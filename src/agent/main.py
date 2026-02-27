@@ -1,8 +1,10 @@
 from langchain.messages import AIMessage, HumanMessage
+from langfuse import propagate_attributes
 from langgraph.graph import END, START, StateGraph
 
 from src.agent.config import langfuse
 from src.agent.nodes import finalize_node, llm_call, should_continue, tool_node
+from src.agent.session import generate_session_id
 from src.agent.state import AgentOutput, MessagesState
 
 
@@ -20,15 +22,17 @@ agent = agent_builder.compile()
 
 
 def run_pipeline(user_input: str) -> dict:
-    final_state = agent.invoke(
-        {
-            "messages": [HumanMessage(content=user_input)],
-            "llm_calls": 0,
-            "used_tools": [],
-        }
-    )
-    langfuse.flush()
-    return final_state
+    resolved_session_id = generate_session_id()
+    with propagate_attributes(session_id=resolved_session_id):
+        final_state = agent.invoke(
+            {
+                "messages": [HumanMessage(content=user_input)],
+                "llm_calls": 0,
+                "used_tools": [],
+            }
+        )
+        langfuse.flush()
+        return final_state
 
 
 def extract_final_answer(final_state: dict) -> str:
