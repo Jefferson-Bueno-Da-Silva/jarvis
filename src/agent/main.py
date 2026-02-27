@@ -46,31 +46,3 @@ def run_pipeline(user_input: str) -> dict:
         )
         langfuse.flush()
         return final_state
-
-
-def extract_final_answer(final_state: dict) -> str:
-    final_output = final_state.get("final_output")
-    if isinstance(final_output, dict) and isinstance(final_output.get("answer"), str):
-        return final_output["answer"]
-
-    for message in reversed(final_state.get("messages", [])):
-        if isinstance(message, AIMessage) and not message.tool_calls:
-            content = message.content
-            if isinstance(content, str):
-                return content
-            if isinstance(content, list):
-                return " ".join(str(part) for part in content)
-            return str(content)
-    return "Sem resposta final do agente."
-
-
-def extract_structured_output(final_state: dict) -> AgentOutput:
-    final_output = final_state.get("final_output")
-    if isinstance(final_output, dict):
-        return AgentOutput.model_validate(final_output)
-
-    return AgentOutput(
-        answer=extract_final_answer(final_state),
-        success=True,
-        used_tools=[],
-    )

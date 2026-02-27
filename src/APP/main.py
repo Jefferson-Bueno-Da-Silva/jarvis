@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
-from src.agent.main import extract_structured_output, run_pipeline
+from src.agent.main import run_pipeline
 
 app = FastAPI(
     title="Jarvis Agent API",
@@ -37,16 +37,10 @@ def graph_image() -> FileResponse:
     return FileResponse(path=GRAPH_IMAGE_PATH, media_type="image/png", filename="graph_xray.png")
 
 
-@app.post("/agent", response_model=AgentResponse)
-def ask_agent(payload: AgentRequest) -> AgentResponse:
+@app.post("/agent", response_model=dict)
+def ask_agent(payload: AgentRequest) -> dict:
     try:
         final_state = run_pipeline(payload.message)
-        structured = extract_structured_output(final_state)
-        return AgentResponse(
-            answer=structured.answer,
-            success=structured.success,
-            used_tools=structured.used_tools,
-            llm_calls=final_state.get("llm_calls", 0),
-        )
+        return final_state
     except Exception as error:
         raise HTTPException(status_code=500, detail=f"Erro ao processar requisição: {error}") from error
