@@ -14,7 +14,7 @@ def bootstrap_tasks_node(state: MessagesState) -> MessagesState:
     list_tool = tools_by_name.get("google_tasks_list")
     if list_tool is None:
         return {
-            "messages": result,
+            "messages": [],
             "used_tools": [],
             "llm_calls": state.get("llm_calls", 0),
         }

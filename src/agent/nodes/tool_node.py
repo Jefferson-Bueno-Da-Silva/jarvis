@@ -11,21 +11,21 @@ from src.models.model import tools_by_name
 def tool_node(state: MessagesState) -> MessagesState:
     """Performs the tool call decided by the LLM."""
     result = state.get("messages", [])
-    used_tools: list[str] = state.get("used_tools", [])
+    used_tools: str = ""
     last_message = state["messages"][-1]
 
     # Only AIMessage has tool_calls; guard access to satisfy type checkers.
     if not isinstance(last_message, AIMessage) or not getattr(last_message, "tool_calls", None):
         return {
             "messages": result,
-            "used_tools": used_tools,
+            "used_tools": [],
             "llm_calls": state.get("llm_calls", 0),
         }
 
     for tool_call in last_message.tool_calls:
         tool_name = tool_call["name"]
         selected_tool = tools_by_name.get(tool_name)
-        used_tools.append(tool_name)
+        used_tools = tool_name
         if selected_tool is None:
             tool_output = {"ok": False, "error": f"Ferramenta não encontrada: {tool_name}"}
         else:
@@ -41,6 +41,6 @@ def tool_node(state: MessagesState) -> MessagesState:
 
     return {
         "messages": result,
-        "used_tools": used_tools,
+        "used_tools": [used_tools],
         "llm_calls": state.get("llm_calls", 0),
     }
