@@ -1,6 +1,9 @@
+import json
 from pathlib import Path
+from typing import Any
+from urllib.parse import parse_qsl
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
@@ -44,3 +47,12 @@ def ask_agent(payload: AgentRequest) -> dict:
         return final_state
     except Exception as error:
         raise HTTPException(status_code=500, detail=f"Erro ao processar requisição: {error}") from error
+
+
+@app.post("/chat", response_model=dict)
+async def chat_agent(request: Request) -> dict:
+    data = dict(await request.form())
+    print("Received form data:", data)
+    message = data.get("Body", "")
+    print("Extracted message:", message)
+    return {"received": True}
