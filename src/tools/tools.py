@@ -148,3 +148,5 @@ GOOGLE_TASKS_TOOLS = [
     google_tasks_update,
     google_tasks_delete,
 ]
+
+tools_by_name = {tool.name: tool for tool in GOOGLE_TASKS_TOOLS}

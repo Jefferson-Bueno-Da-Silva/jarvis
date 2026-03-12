@@ -10,7 +10,7 @@ def llm_call(state: MessagesState) -> MessagesState:
     with langfuse.start_as_current_observation(
         as_type="generation",
         name="llm-response",
-        model="gemini-2.5-flash",
+        model="openrouter/free",
         input=[SYS_PROMPT] + state["messages"],
     ) as generation:
         message = model_with_tools.invoke([SYS_PROMPT] + state["messages"])
@@ -19,5 +19,4 @@ def llm_call(state: MessagesState) -> MessagesState:
     return {
         "messages": [message],
         "llm_calls": state.get("llm_calls", 0) + 1,
-        "used_tools": [],
     }
