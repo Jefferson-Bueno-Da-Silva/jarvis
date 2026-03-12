@@ -72,6 +72,7 @@ def run_pipeline(user_input: str) -> dict:
             {
                 "messages": [HumanMessage(content=user_input)],
                 "llm_calls": 0,
+                "tools_used": [],
             }
             ),
         )
@@ -79,4 +80,5 @@ def run_pipeline(user_input: str) -> dict:
         return {
             "text": _extract_text_from_state(final_state),
             "llm_calls": final_state.get("llm_calls", 0),
+            "tools_used": final_state.get("tools_used", []),
         }

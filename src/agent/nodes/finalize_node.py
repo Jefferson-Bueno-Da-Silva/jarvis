@@ -1,6 +1,6 @@
 from typing import Literal
 
-from langchain.messages import AIMessage
+from langchain.messages import AIMessage, AnyMessage
 from langfuse import observe
 
 from src.agent.state import MessagesState
@@ -20,7 +20,9 @@ def finalize_node(state: MessagesState) -> MessagesState:
     final_message = AIMessage(
         content=state.get("messages", "")[-1].content if state.get("messages") else "No messages",
     )
+    messages: list[AnyMessage] = [final_message]
     return {
-        "messages": [final_message],
+        "messages": messages,
         "llm_calls": state.get("llm_calls", 0),
+        "tools_used": [],
     }
