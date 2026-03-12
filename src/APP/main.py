@@ -24,7 +24,6 @@ class AgentRequest(BaseModel):
 class AgentResponse(BaseModel):
     answer: str
     success: bool
-    used_tools: list[str]
     llm_calls: int
 
 

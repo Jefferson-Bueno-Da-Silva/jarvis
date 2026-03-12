@@ -19,10 +19,8 @@ def should_continue(state: MessagesState) -> Literal["tool_node", "finalize_node
 def finalize_node(state: MessagesState) -> MessagesState:
     final_message = AIMessage(
         content=state.get("messages", "")[-1].content if state.get("messages") else "No messages",
-        tool_calls=[],
     )
     return {
         "messages": [final_message],
         "llm_calls": state.get("llm_calls", 0),
-        "used_tools": [],
     }

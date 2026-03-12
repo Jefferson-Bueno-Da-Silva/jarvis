@@ -4,7 +4,7 @@ from langchain.messages import SystemMessage
 from langfuse import observe
 
 from src.agent.state import MessagesState
-from src.models.model import tools_by_name
+from src.tools.tools import tools_by_name
 
 
 @observe(name="Bootstrap Tasks Node")
@@ -15,7 +15,6 @@ def bootstrap_tasks_node(state: MessagesState) -> MessagesState:
     if list_tool is None:
         return {
             "messages": [],
-            "used_tools": [],
             "llm_calls": state.get("llm_calls", 0),
         }
 
@@ -39,6 +38,5 @@ def bootstrap_tasks_node(state: MessagesState) -> MessagesState:
 
     return {
         "messages": result,
-        "used_tools": ["google_tasks_list"],
         "llm_calls": state.get("llm_calls", 0),
     }
